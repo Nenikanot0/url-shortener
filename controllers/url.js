@@ -5,7 +5,9 @@ const URL=require("../models/url");
 
 async function handleGenerateShortId(req,res){
     const body=req.body;
-    const url=body.url.trim().replace(/%20/g,"");
+    const url = body.url?.trim();
+
+
     if(!url) return res.status(400).json({error:"url is required"});
 
 
@@ -16,10 +18,11 @@ async function handleGenerateShortId(req,res){
         shortID = existing.shortId;
     } else {
         shortID = nanoid(8);
-        await URL.create({
+        await URL.create({  //creates a new record
             shortId: shortID,
             redirectedUrl: url,
             visitHistory: [],
+            createdBy:req.user._id,
         });
     }
 
